@@ -5,6 +5,12 @@ initdemo() {
   source "$JHOME/initdemo"
 }
 
+info() {
+  if [ "$verbose" = true ] ; then
+    printf "[INFO] %s\n" "$*"
+  fi
+}
+
 do_keep() {
   cd "$JHOME/playground"
 }
@@ -13,6 +19,7 @@ do_reset() {
   cd "$JHOME"
   /bin/rm -rf playground
   /bin/mkdir -p playground && cd playground
+  info demo reset
 }
 
 do_usage() {
@@ -27,16 +34,18 @@ EOFEOF
 }
 
 TEMP=$(/usr/bin/getopt -n "$mycmd" -o hk   \
-                       --long "help,keep" \
+                       --long "help,keep,verbose,reset" \
                        -- "$@") || exit $?
 
 action=do_reset
+verbose=true
 eval set -- "$TEMP"
 while true; do
   case "$1" in
     -h|--help) action=do_usage; shift 1;;
     -k|--keep) action=do_keep; shift 1;;
     -r|--reset) action=do_reset; shift 1;;
+    -v|--verbose) verbose=true; shift 1;;
     --) shift 1; break;;
     *) echo "$cmd: Invalid option: $1" 1>&2; usage; echo; exit 1;;
   esac
@@ -46,6 +55,7 @@ done
 if [ -z "$JHOME" ] ; then
   JHOME="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
   progname="$(basename "${BASH_SOURCE[0]}")"
+  info "JHOME=$JHOME"
 fi
 
 $action
