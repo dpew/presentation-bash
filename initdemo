@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Create function to run this script
-inittest() {
+initdemo() {
   source "$JHOME/initdemo"
 }
 
 do_keep() {
-  ;
+  cd "$JHOME/playground"
 }
 
 do_reset() {
@@ -21,8 +21,8 @@ Usage: $progname OPTIONS
 
 OPTIONS
  -h, --help      Display this help
- -k, --keep      Do not reset the playground (default is to reset
-                 return to the playground)
+ -r, --reset     Reset and CD to playground
+ -k, --keep      CD to playground only
 EOFEOF
 }
 
@@ -36,6 +36,7 @@ while true; do
   case "$1" in
     -h|--help) action=do_usage; shift 1;;
     -k|--keep) action=do_keep; shift 1;;
+    -r|--reset) action=do_reset; shift 1;;
     --) shift 1; break;;
     *) echo "$cmd: Invalid option: $1" 1>&2; usage; echo; exit 1;;
   esac
